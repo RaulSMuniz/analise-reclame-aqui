@@ -1,8 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 import time
 import json
@@ -59,4 +57,5 @@ def capturar_dados_dashboard(empresa='kabum'):
     except Exception as e:
         return {"erro": str(e)}
     finally:
+
         driver.quit()
