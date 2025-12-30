@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from datetime import datetime
 import time
 import json
@@ -8,20 +9,25 @@ import os
 
 def capturar_dados_dashboard(empresa='kabum'):
     chrome_options = Options()
-    
+
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     
-    possiveis_caminhos = [
+
+    if os.path.exists("/usr/bin/chromium"):
+        chrome_options.binary_location = "/usr/bin/chromium"
+    elif os.path.exists("/usr/bin/chromium-browser"):
+        chrome_options.binary_location = "/usr/bin/chromium-browser"
+        
+    possiveis_caminhos_driver = [
         "/usr/bin/chromedriver",
-        "/usr/lib/chromium-browser/chromedriver",
-        "/usr/bin/chromium-browser"
+        "/usr/lib/chromium-browser/chromedriver"
     ]
     
     driver_path = None
-    for caminho in possiveis_caminhos:
+    for caminho in possiveis_caminhos_driver:
         if os.path.exists(caminho):
             driver_path = caminho
             break
@@ -31,9 +37,9 @@ def capturar_dados_dashboard(empresa='kabum'):
             service = Service(executable_path=driver_path)
             driver = webdriver.Chrome(service=service, options=chrome_options)
         else:
-            driver = webdriver.Chrome(options=chrome_options) 
+            driver = webdriver.Chrome(options=chrome_options)
     except Exception as e:
-        raise Exception(f"Falha ao iniciar o WebDriver. Caminho detectado: {driver_path}. Erro: {e}")
+        raise Exception(f"Erro ao iniciar WebDriver. Caminho Driver: {driver_path}. Erro: {e}")
     
     url = f"https://www.reclameaqui.com.br/empresa/{empresa}/"
     
@@ -77,6 +83,7 @@ def capturar_dados_dashboard(empresa='kabum'):
     finally:
 
         driver.quit()
+
 
 
 
