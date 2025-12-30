@@ -8,19 +8,18 @@ import os
 
 def capturar_dados_dashboard(empresa='kabum'):
     chrome_options = Options()
-
+    
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-
-    try:
-        # Tenta o caminho padrão do Linux (Streamlit Cloud)
-        service = Service("/usr/bin/chromedriver")
+    
+    chrome_options.binary_location = "/usr/bin/chromium"
+    
+    if os.path.exists("/usr/bin/chromedriver"):
+        service = Service(executable_path="/usr/bin/chromedriver")
         driver = webdriver.Chrome(service=service, options=chrome_options)
-    except Exception:
-        # Se falhar (ex: rodando no seu Windows local), ele tenta o modo padrão
-        # Para rodar local, você ainda pode precisar do webdriver-manager instalado apenas na sua máquina
+    else:
         driver = webdriver.Chrome(options=chrome_options)
     
     url = f"https://www.reclameaqui.com.br/empresa/{empresa}/"
@@ -65,4 +64,5 @@ def capturar_dados_dashboard(empresa='kabum'):
     finally:
 
         driver.quit()
+
 
