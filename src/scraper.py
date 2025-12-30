@@ -14,7 +14,8 @@ def capturar_dados_dashboard(empresa='kabum'):
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-    
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")
 
     if os.path.exists("/usr/bin/chromium"):
         chrome_options.binary_location = "/usr/bin/chromium"
@@ -45,8 +46,11 @@ def capturar_dados_dashboard(empresa='kabum'):
     
     try:
         driver.get(url)
-        time.sleep(5) 
-
+        
+        time.sleep(10) 
+        driver.execute_script("window.scrollTo(0, 500);")
+        time.sleep(2)
+        
         spans = driver.find_elements(By.TAG_NAME, 'span')
         
         texto_completo = [s.text for s in spans if s.text]
@@ -83,6 +87,7 @@ def capturar_dados_dashboard(empresa='kabum'):
     finally:
 
         driver.quit()
+
 
 
 
