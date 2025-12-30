@@ -14,13 +14,26 @@ def capturar_dados_dashboard(empresa='kabum'):
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     
-    chrome_options.binary_location = "/usr/bin/chromium"
+    possiveis_caminhos = [
+        "/usr/bin/chromedriver",
+        "/usr/lib/chromium-browser/chromedriver",
+        "/usr/bin/chromium-browser"
+    ]
     
-    if os.path.exists("/usr/bin/chromedriver"):
-        service = Service(executable_path="/usr/bin/chromedriver")
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-    else:
-        driver = webdriver.Chrome(options=chrome_options)
+    driver_path = None
+    for caminho in possiveis_caminhos:
+        if os.path.exists(caminho):
+            driver_path = caminho
+            break
+
+    try:
+        if driver_path:
+            service = Service(executable_path=driver_path)
+            driver = webdriver.Chrome(service=service, options=chrome_options)
+        else:
+            driver = webdriver.Chrome(options=chrome_options) 
+    except Exception as e:
+        raise Exception(f"Falha ao iniciar o WebDriver. Caminho detectado: {driver_path}. Erro: {e}")
     
     url = f"https://www.reclameaqui.com.br/empresa/{empresa}/"
     
@@ -64,5 +77,6 @@ def capturar_dados_dashboard(empresa='kabum'):
     finally:
 
         driver.quit()
+
 
 
